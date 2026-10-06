@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Spelling & Listening Dictation Practice</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --bg-color: #f8fafc;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --correct: #10b981;
+            --incorrect: #ef4444;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --modal-bg: rgba(0, 0, 0, 0.4);
+            --stat-box-bg: #f8fafc;
+            --error-bg: #fee2e2;
+            --overtime: #dc2626;
+            --dictation-color: #8b5cf6;
+            --dictation-bg: #ede9fe;
+            --custom-btn: #059669;
+            --weak-color: #f59e0b;
+        }
+
+        body.dark-mode {
+            --bg-color: #0f172a;
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+            --primary: #60a5fa;
+            --correct: #34d399;
+            --incorrect: #f87171;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --modal-bg: rgba(0, 0, 0, 0.7);
+            --stat-box-bg: #0f172a;
+            --error-bg: rgba(239, 68, 68, 0.25);
+            --overtime: #f87171;
+            --dictation-color: #a78bfa;
+            --dictation-bg: rgba(139, 92, 246, 0.2);
+            --custom-btn: #10b981;
+            --weak-color: #fbbf24;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 950px;
+            margin: 25px auto;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .control-btn.custom-trigger {
+            border-color: var(--custom-btn);
+            color: var(--custom-btn);
+            font-weight: 600;
+        }
+
+        .control-btn.custom-trigger:hover {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .control-btn.active-strict {
+            border-color: #ef4444;
+            color: #ef4444;
+            background-color: var(--error-bg);
+        }
+
+        .control-btn.active-dictation {
+            border-color: var(--dictation-color);
+            color: var(--dictation-color);
+            background-color: var(--dictation-bg);
+            font-weight: 600;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .session-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+            margin-bottom: 20px;
+            max-height: 190px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+        }
+
+        .session-btn-wrap {
+            position: relative;
+            display: flex;
+            align-items: stretch;
+        }
+
+        .session-btn {
+            width: 100%;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-main);
+            font-size: 0.82rem;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.2s ease;
+        }
+
+        .session-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .session-btn.active {
+            background-color: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .session-btn.special-btn {
+            border-color: #a855f7;
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        .session-btn.special-btn.active {
+            background-color: #9333ea;
+            border-color: #9333ea;
+            color: #ffffff;
+        }
+
+        .session-btn.custom-btn-tag {
+            border-color: #10b981;
+            color: #10b981;
+            font-weight: 600;
+            padding-right: 28px;
+        }
+
+        .session-btn.custom-btn-tag.active {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: #ffffff;
+        }
+
+        .session-btn.weak-session-btn {
+            border-color: var(--weak-color);
+            color: var(--weak-color);
+            font-weight: 600;
+            padding-right: 28px;
+        }
+
+        .session-btn.weak-session-btn.active {
+            background-color: var(--weak-color);
+            border-color: var(--weak-color);
+            color: #ffffff;
+        }
+
+        .session-del-btn {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            z-index: 2;
+        }
+
+        .session-del-btn:hover {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.15);
+        }
+
+        .session-btn.active + .session-del-btn {
+            color: #ffffff;
+        }
+
+        .session-btn.active + .session-del-btn:hover {
+            color: #fee2e2;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .typing-area {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            position: relative;
+            margin-bottom: 20px;
+            outline: none;
+            cursor: text;
+            border: 1px solid var(--border-color);
+        }
+
+        .dictation-controls {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: var(--stat-box-bg);
+            border-radius: 8px;
+            border: 1px dashed var(--dictation-color);
+        }
+
+        .dictation-controls.show {
+            display: flex;
+        }
+
+        .dictation-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .audio-replay-btn {
+            background-color: var(--dictation-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            transition: opacity 0.2s;
+        }
+
+        .audio-replay-btn:hover {
+            opacity: 0.9;
+        }
+
+        .speed-control {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .speed-select {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .speed-select:focus {
+            border-color: var(--dictation-color);
+        }
+
+        .text-display {
+            font-size: 1.25rem;
+            line-height: 1.9;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            user-select: none;
+            max-height: 280px;
+            overflow-y: auto;
+            word-break: break-word;
+        }
+
+        .text-display span {
+            transition: color 0.05s;
+        }
+
+        .text-display span.correct {
+            color: var(--correct);
+        }
+
+        .text-display span.incorrect {
+            color: var(--incorrect);
+            background-color: var(--error-bg);
+            border-radius: 2px;
+        }
+
+        .text-display span.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--text-main);
+        }
+
+        .text-display span.active.error-lock {
+            border-bottom-color: var(--incorrect);
+            background-color: var(--error-bg);
+            color: var(--incorrect);
+            animation: shake 0.15s ease-in-out;
+        }
+
+        .text-display.masked span.untyped {
+            filter: blur(8px);
+            opacity: 0.3;
+        }
+
+        .text-display.masked span.active {
+            filter: none;
+            opacity: 1;
+            background: var(--dictation-bg);
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        .hidden-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .live-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .timer-display {
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .timer-display.overtime {
+            color: var(--overtime) !important;
+            font-weight: 700;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .app-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--modal-bg);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(2px);
+        }
+
+        .app-modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            max-width: 490px;
+            width: 90%;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .app-modal-content h2 {
+            margin-top: 0;
+            color: var(--text-main);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 18px 0;
+        }
+
+        .stat-box {
+            background: var(--stat-box-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .stat-box span {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .stat-box strong {
+            display: block;
+            font-size: 1.35rem;
+            color: var(--primary);
+            margin-top: 3px;
+        }
+
+        .weak-words-panel {
+            background: var(--stat-box-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .weak-words-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .weak-words-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+
+        .weak-word-chip {
+            background: var(--error-bg);
+            color: var(--incorrect);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .modal-action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .modal-action-btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-weak-practice {
+            background-color: var(--weak-color);
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-weak-practice:hover {
+            opacity: 0.9;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--stat-box-bg);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+
+        .modal-footer-btns {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary:hover {
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-bar">
+            <button class="control-btn custom-trigger" onclick="openCustomModal()">
+                <span>➕</span> Add Custom Session
+            </button>
+            <button class="control-btn" id="dictationToggleBtn" onclick="toggleDictationMode()">
+                <span id="dictationIcon">🎧</span> <span id="dictationLabel">Dictation Mode: OFF</span>
+            </button>
+            <button class="control-btn active-strict" id="strictToggleBtn" onclick="toggleStrictMode()">
+                <span id="strictIcon">🔒</span> <span id="strictLabel">Strict Mode: ON</span>
+            </button>
+            <button class="control-btn" id="soundToggleBtn" onclick="toggleSound()">
+                <span id="soundIcon">🔊</span> <span id="soundLabel">Sound: ON</span>
+            </button>
+            <button class="control-btn" id="themeToggleBtn" onclick="toggleTheme()">
+                <span id="themeIcon">🌙</span> <span id="themeLabel">Dark Mode</span>
+            </button>
+        </div>
+
+        <header>
+            <h1>IELTS Spelling & Listening Dictation Meter</h1>
+            <p id="subHeaderDesc">Target: 8 Words Per Minute (Words followed by comma)</p>
+        </header>
+
+        <div class="session-grid" id="sessionGrid"></div>
+
+        <div class="typing-area" id="typingArea" tabindex="0">
+            <div class="dictation-controls" id="dictationControls">
+                <div class="dictation-left">
+                    <button class="audio-replay-btn" onclick="speakCurrentWord()">
+                        <span>🔊</span> Repeat Audio (Press Ctrl)
+                    </button>
+                    <div class="speed-control">
+                        <label for="speedSelect">Speed:</label>
+                        <select id="speedSelect" class="speed-select" onchange="updateAudioSpeed(this.value)">
+                            <option value="0.75">0.75x</option>
+                            <option value="0.85" selected>0.85x (Default)</option>
+                            <option value="1.0">1.0x (Normal)</option>
+                            <option value="1.25">1.25x (Fast)</option>
+                        </select>
+                    </div>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);" id="currentWordTracker">Listening mode enabled</span>
+            </div>
+
+            <div class="text-display" id="textDisplay">Select a session to begin.</div>
+            <div class="live-stats">
+                <div class="timer-display" id="liveTimer">Time Left: 00:00</div>
+                <div id="liveTarget">Target: 00:00</div>
+                <div id="liveWpm">WPM: 0</div>
+            </div>
+            <input type="text" class="hidden-input" id="hiddenInput" autocomplete="off" autocapitalize="off" spellcheck="false">
+        </div>
+    </div>
+
+    <!-- Custom Session Creator Modal -->
+    <div class="app-modal" id="customModal">
+        <div class="app-modal-content">
+            <h2>Add Custom Practice Session</h2>
+            <div class="form-group">
+                <label for="customTitle">Session Title</label>
+                <input type="text" id="customTitle" class="form-input" placeholder="e.g. My Cambridge Test 1 Vocabulary">
+            </div>
+            <div class="form-group">
+                <label for="customContent">Words or Paragraph</label>
+                <textarea id="customContent" class="form-textarea" placeholder="Paste words separated by commas, spaces, or a full passage..."></textarea>
+            </div>
+            <div class="modal-footer-btns">
+                <button class="btn-secondary" onclick="closeCustomModal()">Cancel</button>
+                <button class="modal-action-btn" onclick="saveCustomSession()">Save & Practice</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result & Weak Words Modal -->
+    <div class="app-modal" id="resultModal">
+        <div class="app-modal-content">
+            <h2>Session Completed!</h2>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <span>Time Taken</span>
+                    <strong id="resTime">0s</strong>
+                </div>
+                <div class="stat-box">
+                    <span>Target Time</span>
+                    <strong id="resTarget">0s</strong>
+                </div>
+                <div class="stat-box">
+                    <span>Average WPM</span>
+                    <strong id="resAvgWpm">0</strong>
+                </div>
+                <div class="stat-box">
+                    <span>Highest WPM</span>
+                    <strong id="resMaxWpm">0</strong>
+                </div>
+            </div>
+
+            <div class="weak-words-panel" id="weakWordsPanel" style="display: none;">
+                <div class="weak-words-header">
+                    <span style="color: var(--incorrect);">⚠️ Mistakes Caught (<span id="weakCount">0</span> words)</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Auto-saved as session</span>
+                </div>
+                <div class="weak-words-chips" id="weakWordsChips"></div>
+            </div>
+
+            <div class="modal-footer-btns">
+                <button class="btn-secondary" onclick="closeResultModal()">Practice Current Again</button>
+                <button class="btn-weak-practice" id="practiceWeakBtn" style="display: none;" onclick="startWeakSession()">Practice Weak Words Now ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const defaultSessions = [
+            {
+                title: "1. Days and Months",
+                words: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "weekdays", "weekend", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+            },
+            {
+                title: "2. Money Matters",
+                words: ["cash", "debit", "credit card", "cheque", "in advance", "annual fee", "monthly membership", "interest rate", "deposit", "tuition fees", "poverty", "bank statement", "money management", "current account", "student account", "withdraw", "low-risk investment", "mortgage", "grace period", "budget deficit", "retail voucher", "coupon", "counterfeit money", "public money", "tax payers' money", "debt", "interest-free credit", "purchase", "partial refund", "annuity", "non-refundable", "MasterCard", "Visa", "distribution costs", "income", "finance department", "family finances", "duty-free store"]
+            },
+            {
+                title: "3. Subjects",
+                words: ["science", "politics", "history", "biology", "architecture", "law", "geography", "archaeology", "literature", "business management", "agriculture", "statistics", "mathematics", "logic", "physics", "psychology", "anthropology", "economics", "philosophy", "performing arts", "visual arts", "chemistry", "humanities"]
+            },
+            {
+                title: "4. College / University",
+                words: ["course outline", "group discussion", "handout", "written work", "report writing", "research", "proofreading", "experiment", "experience", "reference", "textbook", "dictionary", "laptop", "printer", "student advisor", "teamwork", "module", "topic", "assessment", "library", "department", "computer center", "classroom", "lecture", "tutor", "main hall", "attendance", "deadline", "give a talk", "speech", "computer laboratory", "certificate", "diploma", "placement test", "overseas students", "full-time", "facilities", "college", "dining room", "specialist", "knowledge", "international", "accommodation", "homestay", "primary", "secondary", "intermediate", "media room", "resources room", "staff", "commencement", "dissertation", "leaflet", "faculty", "pupils", "pencil", "feedback", "tasks", "outcomes", "advanced", "introductory", "extra background", "higher education", "guidelines", "post-secondary", "supervisor", "bachelor's degree", "compound", "vocabulary", "student support services", "student retention", "publication", "foreign students", "schedule", "school reunion", "registrar's office", "stationery"]
+            },
+            {
+                title: "5. Marketing",
+                words: ["catalog", "interview", "newsletter", "competition", "TV program", "strategies", "research method", "entertainment industry", "leadership", "management", "display", "products", "customer", "special offer", "collecting data", "questionnaire", "survey", "mass media", "statistic", "profit margin", "poll", "business card", "training", "trainee", "merchandise", "manufacture", "recruitment"]
+            },
+            {
+                title: "6. Health",
+                words: ["yoga", "keep-fit", "salad bar", "vegetarian", "outdoor activities", "leisure time", "disease", "meal", "protein", "balanced diet", "food pyramid", "vitamin", "carbohydrates", "rice", "pasta", "potatoes", "pizza", "tomatoes", "bread", "cereals", "minerals", "zinc", "meat", "seafood", "eggs", "beans", "milk", "cheese", "yoghurt", "fruit", "vegetables", "citrus fruits", "green pepper", "blackcurrant", "nuts", "egg yolk", "liver", "medicine", "treatment", "remedy", "nursing care", "nursery", "regular exercise"]
+            },
+            {
+                title: "7. Nature",
+                words: ["field", "footbridge", "environment", "waterfall", "river", "mountain", "forest", "village", "coast", "reef", "lake", "valley", "hill", "cliff", "island", "peninsula", "earthquake", "avalanche", "tornado", "typhoon", "desertification", "volcano", "disaster", "catastrophe", "erosion", "landslides", "storm", "flood", "hurricane", "pond", "jungle", "oasis", "dam", "canyon"]
+            },
+            {
+                title: "8. The Environment",
+                words: ["greenhouse effect", "acid rain", "global warming", "carbon dioxide", "burning fossil", "exhaust fumes", "deforestation", "nitrogen oxide", "smog", "climate", "pollution", "temperature", "power plants", "landfill", "cattle", "wind turbine", "solar power", "hydroelectric power", "renewable", "source of energy", "reliable", "solar panels", "environmentally friendly", "oxygen", "chemical-free", "desert", "degradation", "vegetation", "sea level", "ocean currents", "soil conditioner", "coal", "fossil fuels", "firewood", "drought", "contaminated"]
+            },
+            {
+                title: "9. The Animal Kingdom",
+                words: ["birds of prey", "seabirds", "poultry and game", "mammals", "cetacean", "whale", "primates", "rodents", "fish", "amphibian", "reptile", "insects", "octopus", "phylum", "class", "order", "family", "genus", "species", "livestock", "creature", "lion", "penguin"]
+            },
+            {
+                title: "10. Plants",
+                words: ["mushroom", "fungus", "leaves", "seed", "core", "bark", "trunk", "twig", "branch", "flower", "stem", "roots", "cluster", "fertilizer"]
+            },
+            {
+                title: "11. Continents",
+                words: ["South America", "North America", "Africa", "Asia", "Europe", "Australia", "Antarctica"]
+            },
+            {
+                title: "12. Countries",
+                words: ["Egypt", "Mexico", "France", "Indonesia", "Turkey", "England", "Germany", "China", "Greece", "Brazil", "India", "North Korea", "Malaysia", "New Zealand", "Nigeria", "Pakistan", "Singapore", "Switzerland", "United Kingdom", "Italy", "The Dominican Republic", "The Philippines", "Denmark"]
+            },
+            {
+                title: "13. Languages",
+                words: ["linguistics", "bilingual", "trilingual", "polyglot", "Portuguese", "Mandarin", "Bengali", "Chinese", "Hindi", "Russian", "Japanese", "German", "Punjabi", "Thai", "Persian", "Filipino", "French", "Italian", "Greek"]
+            },
+            {
+                title: "14. Architecture",
+                words: ["dome", "palace", "fort", "castle", "glasshouse", "pyramid", "log cabin", "lighthouse", "hut", "skyscraper", "sculpture"]
+            },
+            {
+                title: "15. Homes",
+                words: ["semi-detached house", "duplex", "terraced house", "town house", "row house", "bungalow", "thatched cottage", "mobile home", "houseboat", "block of flats", "apartment building", "condominium", "chimney", "bedroom", "basement", "landlord", "tenant", "rent", "lease", "neighborhood", "suburb", "sofa", "coffee table", "dormitory", "storey", "kitchen", "refrigerator", "microwave", "ground floor", "oven", "hallway", "insurance"]
+            },
+            {
+                title: "16. Cities",
+                words: ["cities", "street", "lane", "city centre", "central station", "car park", "department store", "bridge", "temple", "embassy", "road system", "hospital", "garden"]
+            },
+            {
+                title: "17. Workplaces",
+                words: ["clinic", "dentist", "reception", "appointment", "staff", "selection", "colleague", "workshop", "showroom", "information desk", "employer", "employment", "unemployed", "technical cooperation", "team leaders", "stress", "ability", "vision", "confidence", "employee", "internship"]
+            },
+            {
+                title: "18. Rating and Qualities",
+                words: ["reasonable", "satisfactory", "dangerous", "safe", "strongly recommended", "poor quality", "satisfied", "disappointed", "efficient", "luxurious", "colored", "spotted", "striped", "expensive", "cheap"]
+            },
+            {
+                title: "19. Tour",
+                words: ["tourist guided tour", "ticket office", "souvenir", "trip", "guest", "reservation", "view", "culture", "memorable", "single/double bedded room", "picnic", "tourist attraction", "hostel", "suite", "aquarium"]
+            },
+            {
+                title: "20. Verbs",
+                words: ["train", "develop", "collect", "supervise", "mark", "edit", "revise", "exhibit", "donate", "surpass", "register", "support", "hunt", "persuade", "concentrate", "discuss", "suggest", "arrange", "borrow", "immigrate", "review", "learn", "touch"]
+            },
+            {
+                title: "21. Adjectives",
+                words: ["energetic", "social", "ancient", "necessary", "fantastic", "exciting", "fabulous", "dull", "comfortable", "convenient", "suitable", "affordable", "voluntary", "mandatory", "compulsory", "temporary", "permanent", "immense", "vast", "salty", "extinct", "vulnerable", "pessimistic", "optimistic", "realistic", "practical", "knowledgeable", "flexible", "confident", "Western", "intensive", "tranquil", "spectacular", "intact", "various"]
+            },
+            {
+                title: "22. Hobbies",
+                words: ["orienteering", "caving", "spelunking", "archery", "ice skating", "scuba-diving", "snorkeling", "skateboarding", "bowls", "darts", "golf", "billiards", "photography", "painting", "pottery", "woodcarving", "gardening", "stamp collection", "embroidery", "climbing", "chess", "parachute"]
+            },
+            {
+                title: "23. Sports",
+                words: ["cricket", "baseball", "basketball", "rugby", "soccer", "American football", "hockey", "swimming", "tennis", "squash", "badminton", "ping-pong", "field", "court", "pitch", "stadium", "team", "the discus", "the javelin", "the hammer", "the high jump", "horse racing", "show jumping", "polo", "cycling", "gymnasium", "athlete", "gym", "extreme sports", "paragliding", "hang-gliding", "skydiving", "abseiling", "snowboarding", "bungee jumping", "surfing", "windsurfing", "jet-skiing", "body boarding", "white-water rafting", "kite surfing", "mountain biking", "jogging", "press-up", "push-up", "barbell", "treadmill", "judo", "recreation", "snooker", "walking", "championship", "canoeing", "refreshment"]
+            },
+            {
+                title: "24. Shapes",
+                words: ["square", "rectangular", "triangular", "polygon", "oval", "spherical", "spiral", "circular", "curved", "cylindrical"]
+            },
+            {
+                title: "25. Measurements",
+                words: ["width", "length", "altitude", "imperial system", "metric system", "mass", "depth", "breadth", "height", "three dimensions", "frequency"]
+            },
+            {
+                title: "26. Transportations",
+                words: ["cargo plane", "shipment", "container ship", "boat", "lifeboat", "ferry", "hovercraft", "hydrofoil", "liner", "canal boat", "narrow boat", "dinghy sailing", "sailboat", "paddle steamer", "cabin cruiser", "rowing boat", "rowboat", "kayak", "canoe", "punt", "gondola", "aircraft", "helicopter", "seaplane", "airship", "hot-air balloon"]
+            },
+            {
+                title: "27. Weather",
+                words: ["humid", "hot", "sticky", "breeze", "chilly", "cold", "cool", "dry", "dusty", "freezing", "warm", "wet", "weather forecast", "antenna", "moisture"]
+            },
+            {
+                title: "28. Places",
+                words: ["local library", "swimming pool", "cafeteria", "cottage", "parliament", "accommodation", "restaurant", "canteen", "café", "bookshop", "sports centre", "city council", "dance studio", "park", "conversation club", "kindergarten"]
+            },
+            {
+                title: "29. Equipment and Tools",
+                words: ["helmet", "light", "musical instrument", "cassette", "silicon chip", "digital monitor", "gadget", "device", "screen", "brakes", "wheels", "mechanical pencil", "disk", "backpack"]
+            },
+            {
+                title: "30. The Arts and Media",
+                words: ["opera", "orchestra", "concert", "symphony", "the press", "conductor", "vocalist", "audience", "festival", "carnival", "exhibition", "classical music", "theatre", "cinema", "art gallery", "museum", "ballet", "television", "radio", "graphics", "newspaper"]
+            },
+            {
+                title: "31. Materials",
+                words: ["fur", "metal", "steel", "aluminum", "copper", "rubber", "plastic", "ceramics", "glass", "cement", "stone", "textile", "cotton", "fabric", "wool", "leather", "bone", "paper", "lumber/wood", "glue", "composite", "fiberglass", "concrete", "wax", "silver", "gold", "feather"]
+            },
+            {
+                title: "32. Works and Jobs",
+                words: ["occupation", "profession", "designer", "decorator", "architect", "engineer", "manager", "waitress", "waiter", "teacher", "vacancy", "professor", "specialist", "psychologist", "volunteer", "freelance", "secretary", "craftsman", "work experience", "curriculum vitae", "mail address", "receptionist", "pilot", "guard", "flight attendant", "lecturer", "office assistant", "clerk", "accountant", "cashier", "captain"]
+            },
+            {
+                title: "33. Colors",
+                words: ["blue", "white", "orange", "green", "grey", "black", "red", "yellow", "purple", "brown", "pink"]
+            },
+            {
+                title: "34. Expressions and Time",
+                words: ["three times", "three times per week", "a gap year", "full-time", "part-time", "midday", "midnight", "millennium", "century", "decade", "fortnight"]
+            },
+            {
+                title: "35. Other Terms",
+                words: ["passport photo", "state", "government", "individual", "variety", "private sector", "practice", "gender", "creativity", "original inhabitant", "indigenous", "demonstration", "strike", "entrance", "circuit", "guarantee", "dialog", "commerce", "carriage", "narrative", "chocolate", "satellite", "decision", "prototype", "attitude", "daily routine", "personal fulfillment", "activity", "recipient", "ultrasound", "pedestrian safety", "traffic jams", "procedures", "creation", "prize", "junior", "senior", "opportunity", "driving license", "process", "literary", "man-made", "Republicans", "umbrella", "frequently updated", "waiting list", "sewer systems", "liberal democracy", "Democrats", "lunar calendar", "libertarian", "burger", "videos", "nature conservation", "life expectancy", "fund-raising event", "magnet", "dialect", "ramification", "straight", "farewell", "welfare", "encyclopedia", "evolution", "revolution", "illiteracy", "robot", "proficiency", "sufficient"]
+            },
+            {
+                title: "★ Tricky 1: Double Letters",
+                words: ["accommodation", "embarrassment", "millennium", "recommend", "necessary", "success", "occur", "occurred", "profession", "possession", "disappoint", "apparent", "colleague", "immediate", "interrupt", "exaggerate", "parallel", "commitment", "committee", "harass", "assess", "assessment", "fulfill", "beginning", "disappear", "aggressive", "tomorrow"]
+            },
+            {
+                title: "★ Tricky 2: Silent Letters",
+                words: ["environment", "government", "Wednesday", "February", "knowledge", "doubt", "subtle", "discipline", "foreign", "rhythm", "acquire", "fascinating", "muscle", "exhausted", "aisle", "column", "autumn", "castle", "climb", "receipt"]
+            },
+            {
+                title: "★ Tricky 3: Vowel Traps & Academic",
+                words: ["separate", "definite", "independent", "maintenance", "pronunciation", "privilege", "receive", "believe", "ceiling", "piece", "calendar", "category", "cemetery", "grammar", "guarantee", "guidance", "noticeable", "changeable", "relevant", "convenient", "experience", "occasion", "schedule", "leisure", "weird", "laboratory", "questionnaire", "curriculum", "dissertation", "tuition", "attendance"]
+            },
+            {
+                title: "★ Tricky 4: Numbers, Measures & Misc",
+                words: ["forty", "fourteenth", "ninth", "twelfth", "kilometer", "millimeter", "height", "weight", "temperature", "drought", "pollution", "agriculture", "restaurant", "cafeteria", "library", "stationery", "psychology", "archaeology", "philosophy", "literature", "assignment", "until", "truly", "argument", "business", "across", "address", "weather", "bicycle", "vehicle", "souvenir"]
+            }
+        ];
+
+        let savedCustomSessions = [];
+        try {
+            savedCustomSessions = JSON.parse(localStorage.getItem('ielts_custom_sessions')) || [];
+        } catch (e) {
+            savedCustomSessions = [];
+        }
+
+        let sessionsData = [...defaultSessions, ...savedCustomSessions];
+        let paragraphs = sessionsData.map(session => session.words.join(', '));
+
+        const sessionGrid = document.getElementById('sessionGrid');
+        const textDisplay = document.getElementById('textDisplay');
+        const hiddenInput = document.getElementById('hiddenInput');
+        const typingArea = document.getElementById('typingArea');
+        const liveTimer = document.getElementById('liveTimer');
+        const liveTarget = document.getElementById('liveTarget');
+        const liveWpm = document.getElementById('liveWpm');
+        const resultModal = document.getElementById('resultModal');
+        const customModal = document.getElementById('customModal');
+        const dictationControls = document.getElementById('dictationControls');
+        const currentWordTracker = document.getElementById('currentWordTracker');
+        const weakWordsPanel = document.getElementById('weakWordsPanel');
+        const weakWordsChips = document.getElementById('weakWordsChips');
+        const weakCountSpan = document.getElementById('weakCount');
+        const practiceWeakBtn = document.getElementById('practiceWeakBtn');
+
+        let currentText = "";
+        let characterSpans = [];
+        let currentIndex = 0;
+        let timer = null;
+        let startTime = null;
+        let isPlaying = false;
+        
+        let targetSeconds = 0;
+        let wpmHistory = [];
+        let intervalWpmCalc = null;
+        let currentSessionIndex = 0;
+
+        let strictMode = true;
+        let dictationMode = false;
+        let currentWordIndex = 0;
+        let audioPlaybackRate = 0.85;
+
+        let currentSessionMistakes = new Set();
+        let lastCreatedWeakSessionIndex = -1;
+
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playKeySound(isCorrect = true) {
+            if (!soundEnabled) return;
+            initAudio();
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const now = audioCtx.currentTime;
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (isCorrect) {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.04);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+                osc.start(now);
+                osc.stop(now + 0.04);
+            } else {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(160, now);
+                osc.frequency.linearRampToValueAtTime(120, now + 0.09);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+                osc.start(now);
+                osc.stop(now + 0.09);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').innerText = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('soundLabel').innerText = soundEnabled ? 'Sound: ON' : 'Sound: OFF';
+            if (soundEnabled) initAudio();
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
+            document.getElementById('themeLabel').innerText = isDark ? 'Light Mode' : 'Dark Mode';
+            localStorage.setItem('typing_theme', isDark ? 'dark' : 'light');
+        }
+
+        if (localStorage.getItem('typing_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').innerText = '☀️';
+            document.getElementById('themeLabel').innerText = 'Light Mode';
+        }
+
+        function toggleStrictMode() {
+            strictMode = !strictMode;
+            const btn = document.getElementById('strictToggleBtn');
+            const icon = document.getElementById('strictIcon');
+            const label = document.getElementById('strictLabel');
+
+            if (strictMode) {
+                btn.classList.add('active-strict');
+                icon.innerText = '🔒';
+                label.innerText = 'Strict Mode: ON';
+            } else {
+                btn.classList.remove('active-strict');
+                icon.innerText = '🔓';
+                label.innerText = 'Strict Mode: OFF';
+                if (characterSpans[currentIndex]) {
+                    characterSpans[currentIndex].classList.remove('error-lock');
+                }
+            }
+            hiddenInput.focus();
+        }
+
+        function updateAudioSpeed(newRate) {
+            audioPlaybackRate = parseFloat(newRate);
+            hiddenInput.focus();
+            if (dictationMode) {
+                speakCurrentWord();
+            }
+        }
+
+        function toggleDictationMode() {
+            dictationMode = !dictationMode;
+            const btn = document.getElementById('dictationToggleBtn');
+            const icon = document.getElementById('dictationIcon');
+            const label = document.getElementById('dictationLabel');
+
+            if (dictationMode) {
+                btn.classList.add('active-dictation');
+                icon.innerText = '🎧';
+                label.innerText = 'Dictation Mode: ON';
+                textDisplay.classList.add('masked');
+                dictationControls.classList.add('show');
+                document.getElementById('subHeaderDesc').innerText = "Dictation Mode: Listen carefully and type the spelling!";
+                speakCurrentWord();
+            } else {
+                btn.classList.remove('active-dictation');
+                icon.innerText = '🎧';
+                label.innerText = 'Dictation Mode: OFF';
+                textDisplay.classList.remove('masked');
+                dictationControls.classList.remove('show');
+                document.getElementById('subHeaderDesc').innerText = "Target: 8 Words Per Minute (Words followed by comma)";
+                window.speechSynthesis.cancel();
+            }
+            hiddenInput.focus();
+        }
+
+        function speakCurrentWord() {
+            if (!('speechSynthesis' in window)) return;
+            const sessionWords = sessionsData[currentSessionIndex].words;
+            if (currentWordIndex >= sessionWords.length) return;
+
+            window.speechSynthesis.cancel();
+            const wordToSpeak = sessionWords[currentWordIndex];
+            const utterance = new SpeechSynthesisUtterance(wordToSpeak);
+
+            const voices = window.speechSynthesis.getVoices();
+            const ukVoice = voices.find(v => v.lang.includes('en-GB') || v.lang.includes('en_GB')) || 
+                            voices.find(v => v.lang.includes('en'));
+            if (ukVoice) utterance.voice = ukVoice;
+
+            utterance.rate = audioPlaybackRate;
+            utterance.pitch = 1.0;
+            window.speechSynthesis.speak(utterance);
+
+            currentWordTracker.innerText = `Word ${currentWordIndex + 1} of ${sessionWords.length}`;
+        }
+
+        function updateWordProgress() {
+            const typedSoFar = currentText.substring(0, currentIndex);
+            const matches = typedSoFar.split(', ');
+            let newWordIndex = matches.length - 1;
+            if (newWordIndex !== currentWordIndex) {
+                currentWordIndex = newWordIndex;
+                if (dictationMode) {
+                    speakCurrentWord();
+                }
+            }
+        }
+
+        function registerMistakeAtCursor() {
+            const sessionWords = sessionsData[currentSessionIndex].words;
+            if (sessionWords && sessionWords[currentWordIndex]) {
+                currentSessionMistakes.add(sessionWords[currentWordIndex].trim());
+            }
+        }
+
+        function openCustomModal() {
+            customModal.style.display = 'flex';
+            document.getElementById('customTitle').value = '';
+            document.getElementById('customContent').value = '';
+            document.getElementById('customTitle').focus();
+        }
+
+        function closeCustomModal() {
+            customModal.style.display = 'none';
+            hiddenInput.focus();
+        }
+
+        function saveCustomSession() {
+            const titleInput = document.getElementById('customTitle').value.trim();
+            const contentInput = document.getElementById('customContent').value.trim();
+
+            if (!contentInput) {
+                alert('Please enter words or a paragraph to practice.');
+                return;
+            }
+
+            const title = titleInput ? `✦ ${titleInput}` : `✦ Custom Session ${savedCustomSessions.length + 1}`;
+            
+            let words = [];
+            if (contentInput.includes(',')) {
+                words = contentInput.split(',').map(w => w.trim()).filter(w => w.length > 0);
+            } else {
+                words = contentInput.split(/\s+/).map(w => w.trim()).filter(w => w.length > 0);
+            }
+
+            const newSession = {
+                title: title,
+                words: words,
+                isCustom: true
+            };
+
+            savedCustomSessions.push(newSession);
+            localStorage.setItem('ielts_custom_sessions', JSON.stringify(savedCustomSessions));
+
+            sessionsData = [...defaultSessions, ...savedCustomSessions];
+            paragraphs = sessionsData.map(session => session.words.join(', '));
+
+            initSessions();
+            closeCustomModal();
+            loadSession(sessionsData.length - 1);
+        }
+
+        // Delete Custom/Weak Session Individually
+        function deleteSession(index, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+
+            const targetSession = sessionsData[index];
+            if (!targetSession || !targetSession.isCustom) return;
+
+            const confirmDelete = confirm(`Are you sure you want to delete "${targetSession.title}"?`);
+            if (!confirmDelete) return;
+
+            const customIndex = index - defaultSessions.length;
+            if (customIndex >= 0 && customIndex < savedCustomSessions.length) {
+                savedCustomSessions.splice(customIndex, 1);
+                localStorage.setItem('ielts_custom_sessions', JSON.stringify(savedCustomSessions));
+
+                sessionsData = [...defaultSessions, ...savedCustomSessions];
+                paragraphs = sessionsData.map(session => session.words.join(', '));
+
+                initSessions();
+
+                if (currentSessionIndex === index) {
+                    const nextIndex = Math.min(index, sessionsData.length - 1);
+                    loadSession(nextIndex);
+                } else if (currentSessionIndex > index) {
+                    currentSessionIndex--;
+                    loadSession(currentSessionIndex);
+                }
+            }
+        }
+
+        function initSessions() {
+            sessionGrid.innerHTML = '';
+            sessionsData.forEach((session, i) => {
+                const wrap = document.createElement('div');
+                wrap.className = 'session-btn-wrap';
+
+                const btn = document.createElement('button');
+                btn.className = 'session-btn';
+                if (session.title.startsWith('⚠️')) {
+                    btn.classList.add('weak-session-btn');
+                } else if (session.title.startsWith('★')) {
+                    btn.classList.add('special-btn');
+                } else if (session.isCustom || session.title.startsWith('✦')) {
+                    btn.classList.add('custom-btn-tag');
+                }
+                btn.innerText = session.title;
+                btn.title = session.title;
+                btn.onclick = () => loadSession(i, btn);
+                wrap.appendChild(btn);
+
+                // Add delete button ONLY for custom or weak word sessions
+                if (session.isCustom) {
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'session-del-btn';
+                    delBtn.innerHTML = '✕';
+                    delBtn.title = 'Delete this session';
+                    delBtn.onclick = (e) => deleteSession(i, e);
+                    wrap.appendChild(delBtn);
+                }
+
+                sessionGrid.appendChild(wrap);
+            });
+        }
+
+        function loadSession(index, btnElement) {
+            currentSessionIndex = index;
+            currentWordIndex = 0;
+            currentSessionMistakes.clear();
+            document.querySelectorAll('.session-btn').forEach(b => b.classList.remove('active'));
+            
+            if (!btnElement) {
+                btnElement = document.querySelectorAll('.session-btn')[index];
+            }
+            if (btnElement) {
+                btnElement.classList.add('active');
+                btnElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            currentText = paragraphs[index] || "";
+            textDisplay.innerHTML = '';
+            characterSpans = [];
+            currentIndex = 0;
+            
+            const wordCount = (sessionsData[index] && sessionsData[index].words) ? sessionsData[index].words.length : 0;
+            targetSeconds = Math.ceil((wordCount / 8) * 60);
+
+            currentText.split('').forEach(char => {
+                const span = document.createElement('span');
+                span.innerText = char;
+                span.classList.add('untyped');
+                textDisplay.appendChild(span);
+                characterSpans.push(span);
+            });
+
+            if (characterSpans.length > 0) {
+                characterSpans[0].classList.add('active');
+                characterSpans[0].classList.remove('untyped');
+            }
+
+            resetStats();
+            typingArea.focus();
+
+            if (dictationMode) {
+                setTimeout(speakCurrentWord, 200);
+            }
+        }
+
+        function resetStats() {
+            clearInterval(timer);
+            clearInterval(intervalWpmCalc);
+            window.speechSynthesis.cancel();
+            startTime = null;
+            isPlaying = false;
+            wpmHistory = [];
+            liveTimer.classList.remove('overtime');
+            liveTimer.innerText = `Time Left: ${formatMinSec(targetSeconds)}`;
+            liveTarget.innerText = `Target: ${formatMinSec(targetSeconds)}`;
+            liveWpm.innerText = "WPM: 0";
+            hiddenInput.value = '';
+        }
+
+        function startTimer() {
+            if (!isPlaying) {
+                isPlaying = true;
+                startTime = new Date();
+                
+                timer = setInterval(() => {
+                    const elapsed = Math.floor((new Date() - startTime) / 1000);
+                    const remaining = targetSeconds - elapsed;
+
+                    if (remaining >= 0) {
+                        liveTimer.classList.remove('overtime');
+                        liveTimer.innerText = `Time Left: ${formatMinSec(remaining)}`;
+                    } else {
+                        liveTimer.classList.add('overtime');
+                        liveTimer.innerText = `Overtime: +${formatMinSec(Math.abs(remaining))}`;
+                    }
+                }, 1000);
+
+                intervalWpmCalc = setInterval(() => {
+                    calculateLiveWpm();
+                }, 1000);
+            }
+        }
+
+        function calculateLiveWpm() {
+            if (!startTime) return;
+            const timeElapsedInMinutes = (new Date() - startTime) / 60000;
+            if (timeElapsedInMinutes <= 0) return;
+
+            let correctChars = document.querySelectorAll('.text-display span.correct').length;
+            let currentWpm = Math.round((correctChars / 5) / timeElapsedInMinutes);
+            wpmHistory.push(currentWpm);
+            liveWpm.innerText = `WPM: ${currentWpm}`;
+        }
+
+        function endSession() {
+            clearInterval(timer);
+            clearInterval(intervalWpmCalc);
+            isPlaying = false;
+            window.speechSynthesis.cancel();
+
+            const totalTimeSec = Math.floor((new Date() - startTime) / 1000);
+            const timeInMin = totalTimeSec / 60;
+            const correctChars = document.querySelectorAll('.text-display span.correct').length;
+            
+            const avgWpm = timeInMin > 0 ? Math.round((correctChars / 5) / timeInMin) : 0;
+            const maxWpm = wpmHistory.length > 0 ? Math.max(...wpmHistory) : avgWpm;
+
+            document.getElementById('resTime').innerText = formatMinSec(totalTimeSec);
+            document.getElementById('resTarget').innerText = formatMinSec(targetSeconds);
+            document.getElementById('resAvgWpm').innerText = avgWpm;
+            document.getElementById('resMaxWpm').innerText = maxWpm;
+
+            const mistakeList = Array.from(currentSessionMistakes);
+            if (mistakeList.length > 0) {
+                const now = new Date();
+                const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                const weakTitle = `⚠️ Weak Words (${mistakeList.length}) [${timeStr}]`;
+
+                const weakSession = {
+                    title: weakTitle,
+                    words: mistakeList,
+                    isCustom: true
+                };
+
+                savedCustomSessions.push(weakSession);
+                localStorage.setItem('ielts_custom_sessions', JSON.stringify(savedCustomSessions));
+
+                sessionsData = [...defaultSessions, ...savedCustomSessions];
+                paragraphs = sessionsData.map(session => session.words.join(', '));
+                initSessions();
+
+                lastCreatedWeakSessionIndex = sessionsData.length - 1;
+
+                weakCountSpan.innerText = mistakeList.length;
+                weakWordsChips.innerHTML = mistakeList.map(w => `<span class="weak-word-chip">${w}</span>`).join('');
+                weakWordsPanel.style.display = 'block';
+                practiceWeakBtn.style.display = 'inline-block';
+            } else {
+                weakWordsPanel.style.display = 'none';
+                practiceWeakBtn.style.display = 'none';
+                lastCreatedWeakSessionIndex = -1;
+            }
+
+            resultModal.style.display = 'flex';
+        }
+
+        function startWeakSession() {
+            resultModal.style.display = 'none';
+            if (lastCreatedWeakSessionIndex >= 0) {
+                loadSession(lastCreatedWeakSessionIndex);
+            }
+        }
+
+        function formatMinSec(totalSec) {
+            const m = Math.floor(totalSec / 60);
+            const s = totalSec % 60;
+            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function closeResultModal() {
+            resultModal.style.display = 'none';
+            loadSession(currentSessionIndex);
+        }
+
+        typingArea.addEventListener('click', () => {
+            initAudio();
+            hiddenInput.focus();
+        });
+        
+        hiddenInput.addEventListener('input', (e) => {
+            if (currentIndex >= characterSpans.length) return;
+            
+            startTimer();
+            
+            const typedChar = e.target.value;
+            hiddenInput.value = ''; 
+
+            const expectedChar = currentText[currentIndex];
+
+            if (strictMode) {
+                if (typedChar === expectedChar) {
+                    characterSpans[currentIndex].classList.remove('active', 'incorrect', 'error-lock', 'untyped');
+                    characterSpans[currentIndex].classList.add('correct');
+                    playKeySound(true);
+                    currentIndex++;
+                    updateWordProgress();
+
+                    if (currentIndex < characterSpans.length) {
+                        characterSpans[currentIndex].classList.add('active');
+                        characterSpans[currentIndex].classList.remove('untyped');
+                        
+                        const activeSpan = characterSpans[currentIndex];
+                        if (activeSpan.offsetTop > textDisplay.scrollTop + textDisplay.offsetHeight - 50) {
+                            textDisplay.scrollTop = activeSpan.offsetTop - 100;
+                        }
+                    } else {
+                        endSession();
+                    }
+                } else {
+                    registerMistakeAtCursor();
+                    characterSpans[currentIndex].classList.remove('error-lock');
+                    void characterSpans[currentIndex].offsetWidth;
+                    characterSpans[currentIndex].classList.add('error-lock');
+                    playKeySound(false);
+                }
+            } else {
+                if (typedChar === expectedChar) {
+                    characterSpans[currentIndex].classList.add('correct');
+                    characterSpans[currentIndex].classList.remove('incorrect');
+                    playKeySound(true);
+                } else {
+                    registerMistakeAtCursor();
+                    characterSpans[currentIndex].classList.add('incorrect');
+                    characterSpans[currentIndex].classList.remove('correct');
+                    playKeySound(false);
+                }
+
+                characterSpans[currentIndex].classList.remove('active', 'untyped');
+                currentIndex++;
+                updateWordProgress();
+
+                if (currentIndex < characterSpans.length) {
+                    characterSpans[currentIndex].classList.add('active');
+                    characterSpans[currentIndex].classList.remove('untyped');
+                    
+                    const activeSpan = characterSpans[currentIndex];
+                    if (activeSpan.offsetTop > textDisplay.scrollTop + textDisplay.offsetHeight - 50) {
+                        textDisplay.scrollTop = activeSpan.offsetTop - 100;
+                    }
+                } else {
+                    endSession();
+                }
+            }
+        });
+
+        hiddenInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Control') {
+                if (dictationMode) speakCurrentWord();
+            }
+
+            if (e.key === 'Backspace') {
+                if (strictMode) {
+                    if (characterSpans[currentIndex]) {
+                        characterSpans[currentIndex].classList.remove('error-lock');
+                    }
+                } else if (currentIndex > 0) {
+                    characterSpans[currentIndex]?.classList.remove('active');
+                    if (dictationMode) characterSpans[currentIndex]?.classList.add('untyped');
+                    currentIndex--;
+                    characterSpans[currentIndex].classList.remove('correct', 'incorrect');
+                    characterSpans[currentIndex].classList.add('active');
+                    playKeySound(true);
+                    updateWordProgress();
+                }
+            }
+        });
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
+
+        initSessions();
+        loadSession(0);
+    </script>
+</body>
+</html>
